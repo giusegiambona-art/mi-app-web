@@ -37,10 +37,11 @@ Ingresa tu clave (la que configuraste en `.env.local`)
    - **Nombre**: "Margherita"
    - **Descripción**: "Tomate, mozzarella fresca, albahaca"
    - **Precio**: "12.50"
+   - **Foto**: Selecciona una imagen atractiva de tu pizza
 
 2. Haz clic en "Crear"
 
-3. Luego, sube una foto haciendo clic en "Selecciona archivo"
+3. ¡Tu pizza con foto ya está lista!
 
 ## 4️⃣ Crear una Oferta
 

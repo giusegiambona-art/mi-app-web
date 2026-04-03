@@ -29,8 +29,7 @@ ADMIN_KEY=PizzaMaster2024!#@$
 - Rellena el formulario con:
   - **Nombre**: Nombre de la pizza
   - **Descripción**: Ingredientes y detalles
-  - **Precio**: Precio en tu moneda
-- Haz clic en "Crear"
+  - **Precio**: Precio en tu moneda  - **Foto**: Selecciona una imagen (opcional pero recomendado)- Haz clic en "Crear"
 
 #### Subir Foto
 - Una vez creada la pizza, puedes subir una imagen

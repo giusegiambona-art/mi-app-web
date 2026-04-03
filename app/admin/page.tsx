@@ -38,6 +38,7 @@ export default function AdminPage() {
     price: '',
     image_url: ''
   });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [editingPizza, setEditingPizza] = useState<number | null>(null);
 
   // Estado para formulario de oferta
@@ -116,7 +117,16 @@ export default function AdminPage() {
       });
 
       if (response.ok) {
+        const pizzaData = await response.json();
+        const pizzaId = pizzaData.id || editingPizza;
+
+        // Si hay una imagen seleccionada, subirla
+        if (selectedImage && pizzaId) {
+          await uploadImageForPizza(selectedImage, pizzaId);
+        }
+
         setFormPizza({ id: '', name: '', description: '', price: '', image_url: '' });
+        setSelectedImage(null);
         setEditingPizza(null);
         loadPizzas();
       } else {
@@ -137,6 +147,7 @@ export default function AdminPage() {
       price: pizza.price.toString(),
       image_url: pizza.image_url
     });
+    setSelectedImage(null); // Reset selected image when editing
     setEditingPizza(pizza.id);
   };
 
@@ -234,11 +245,8 @@ export default function AdminPage() {
     }
   };
 
-  // Subir imagen
-  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>, pizzaId: number) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  // Subir imagen para una pizza específica
+  const uploadImageForPizza = async (file: File, pizzaId: number) => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -249,11 +257,22 @@ export default function AdminPage() {
         body: formData
       });
 
-      if (response.ok) {
-        loadPizzas();
-      } else {
-        setError('Error al subir imagen');
+      if (!response.ok) {
+        console.error('Error al subir imagen');
       }
+    } catch (err) {
+      console.error('Error al subir imagen:', err);
+    }
+  };
+
+  // Subir imagen (para pizzas existentes)
+  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>, pizzaId: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await uploadImageForPizza(file, pizzaId);
+      loadPizzas();
     } catch (err) {
       setError('Error al subir imagen');
     }
@@ -321,13 +340,51 @@ export default function AdminPage() {
 
                 <input
                   type="number"
-                  placeholder="Precio"
+                  placeholder="Precio (€)"
                   value={formPizza.price}
                   onChange={(e) => setFormPizza({ ...formPizza, price: e.target.value })}
                   step="0.01"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   required
                 />
+
+                {/* Campo de imagen */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Foto de la pizza (opcional)
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      setSelectedImage(file || null);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  />
+                  {selectedImage && (
+                    <div className="mt-2">
+                      <img
+                        src={URL.createObjectURL(selectedImage)}
+                        alt="Vista previa"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <p className="text-sm text-gray-600 mt-1">
+                        {selectedImage.name}
+                      </p>
+                    </div>
+                  )}
+                  {editingPizza && formPizza.image_url && !selectedImage && (
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-600">Imagen actual:</p>
+                      <img
+                        src={formPizza.image_url}
+                        alt="Imagen actual"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
+                </div>
 
                 <button
                   type="submit"
@@ -342,6 +399,7 @@ export default function AdminPage() {
                     onClick={() => {
                       setEditingPizza(null);
                       setFormPizza({ id: '', name: '', description: '', price: '', image_url: '' });
+                      setSelectedImage(null);
                     }}
                     className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
                   >
