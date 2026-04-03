@@ -41,6 +41,7 @@ export default function AdminLayout({
     try {
       const response = await fetch('/api/admin/login', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

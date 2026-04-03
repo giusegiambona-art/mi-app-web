@@ -17,47 +17,49 @@ export async function POST(request: Request) {
     
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const pizzaId = formData.get('pizza_id') as string;
-    
-    if (!file || !pizzaId) {
+    const pizzaIdRaw = formData.get('pizza_id');
+    const pizzaId = pizzaIdRaw ? Number(pizzaIdRaw.toString()) : NaN;
+
+    if (!file || !pizzaId || Number.isNaN(pizzaId)) {
       return Response.json(
-        { error: 'Archivo y pizza_id requeridos' },
+        { error: 'Archivo y pizza_id requeridos (pizza_id debe ser numérico)' },
         { status: 400 }
       );
     }
-    
+
     // Crear directorio público si no existe
     const publicDir = path.join(process.cwd(), 'public', 'uploads');
     if (!fs.existsSync(publicDir)) {
       fs.mkdirSync(publicDir, { recursive: true });
     }
-    
+
     // Generar nombre único para el archivo
     const timestamp = Date.now();
     const filename = `${pizzaId}-${timestamp}-${file.name}`;
     const filepath = path.join(publicDir, filename);
-    
+
     // Guardar archivo
     const buffer = await file.arrayBuffer();
     fs.writeFileSync(filepath, Buffer.from(buffer));
-    
+
     // Guardar URL en BD
     const imageUrl = `/uploads/${filename}`;
-    
+
     // Actualizar pizza con la imagen
     db.prepare(`
       UPDATE pizzas SET image_url = ? WHERE id = ?
     `).run(imageUrl, pizzaId);
-    
+
     // También guardar en tabla de imágenes para historial
     db.prepare(`
       INSERT INTO images (pizza_id, image_url) VALUES (?, ?)
     `).run(pizzaId, imageUrl);
-    
+
     return Response.json({
       success: true,
       url: imageUrl,
-      filename
+      filename,
+      pizza_id: pizzaId
     });
   } catch (error) {
     console.error('Error en upload:', error);

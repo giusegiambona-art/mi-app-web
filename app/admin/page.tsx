@@ -70,7 +70,7 @@ export default function AdminPage() {
   const loadPizzas = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/pizzas');
+      const response = await fetch('/api/admin/pizzas', { credentials: 'include' });
       if (response.ok) {
         const data = await response.json();
         setPizzas(data);
@@ -85,7 +85,7 @@ export default function AdminPage() {
   const loadOffers = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/offers');
+      const response = await fetch('/api/admin/offers', { credentials: 'include' });
       if (response.ok) {
         const data = await response.json();
         setOffers(data);
@@ -112,6 +112,7 @@ export default function AdminPage() {
 
       const response = await fetch('/api/admin/pizzas', {
         method,
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
@@ -122,7 +123,12 @@ export default function AdminPage() {
 
         // Si hay una imagen seleccionada, subirla
         if (selectedImage && pizzaId) {
-          await uploadImageForPizza(selectedImage, pizzaId);
+          try {
+            await uploadImageForPizza(selectedImage, pizzaId);
+          } catch (err) {
+            setError('Error al subir imagen');
+            return;
+          }
         }
 
         setFormPizza({ id: '', name: '', description: '', price: '', image_url: '' });
@@ -156,7 +162,8 @@ export default function AdminPage() {
     if (confirm('¿Estás seguro de que quieres eliminar esta pizza?')) {
       try {
         const response = await fetch(`/api/admin/pizzas?id=${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          credentials: 'include'
         });
 
         if (response.ok) {
@@ -187,6 +194,7 @@ export default function AdminPage() {
 
       const response = await fetch('/api/admin/offers', {
         method,
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
@@ -231,7 +239,8 @@ export default function AdminPage() {
     if (confirm('¿Estás seguro de que quieres eliminar esta oferta?')) {
       try {
         const response = await fetch(`/api/admin/offers?id=${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          credentials: 'include'
         });
 
         if (response.ok) {
@@ -254,14 +263,21 @@ export default function AdminPage() {
 
       const response = await fetch('/api/admin/upload', {
         method: 'POST',
+        credentials: 'include',
         body: formData
       });
 
       if (!response.ok) {
-        console.error('Error al subir imagen');
+        const data = await response.json().catch(() => null);
+        console.error('Error al subir imagen', data || response.status);
+        throw new Error('Error al subir imagen');
       }
+
+      const json = await response.json();
+      return json;
     } catch (err) {
       console.error('Error al subir imagen:', err);
+      throw err;
     }
   };
 
