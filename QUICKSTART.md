@@ -50,7 +50,7 @@ Ingresa tu clave (la que configuraste en `.env.local`)
 
 3. Ingresa un descuento:
    - **Descuento %**: "20" (para 20% off)
-   - O **Descuento $**: "2.50" (para quitar $2.50)
+   - O **Descuento €**: "2.50" (para quitar €2.50)
 
 4. Haz clic en "Crear"
 

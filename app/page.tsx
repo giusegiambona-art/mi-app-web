@@ -36,7 +36,7 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-red-600">🍕 Pizzería Online</h1>
+          <h1 className="text-3xl font-bold text-red-600">🍕 Pizzería Online - Precios en €</h1>
           <Link
             href="/admin"
             className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition"
@@ -94,10 +94,10 @@ export default function Home() {
                     {pizza.has_offer && pizza.discount ? (
                       <div className="flex items-baseline gap-2">
                         <span className="text-3xl font-bold text-green-600">
-                          ${calculatePrice(pizza)}
+                          €{calculatePrice(pizza)}
                         </span>
                         <span className="text-lg text-gray-400 line-through">
-                          ${pizza.price.toFixed(2)}
+                          €{pizza.price.toFixed(2)}
                         </span>
                         <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
                           -{pizza.discount}%
@@ -105,7 +105,7 @@ export default function Home() {
                       </div>
                     ) : (
                       <span className="text-3xl font-bold text-gray-900">
-                        ${pizza.price.toFixed(2)}
+                        €{pizza.price.toFixed(2)}
                       </span>
                     )}
                   </div>

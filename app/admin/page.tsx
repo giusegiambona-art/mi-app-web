@@ -381,7 +381,7 @@ export default function AdminPage() {
 
                     <h3 className="font-bold text-lg">{pizza.name}</h3>
                     <p className="text-gray-600 text-sm mb-2">{pizza.description}</p>
-                    <p className="text-2xl font-bold text-blue-600 mb-2">${pizza.price}</p>
+                    <p className="text-2xl font-bold text-blue-600 mb-2">€{pizza.price}</p>
                     <p className="text-xs text-gray-500 mb-3">
                       {pizza.active_offers} oferta(s) activa(s)
                     </p>
@@ -444,7 +444,7 @@ export default function AdminPage() {
 
                 <input
                   type="number"
-                  placeholder="Descuento fijo ($)"
+                  placeholder="Descuento fijo (€)"
                   value={formOffer.discount_fixed}
                   onChange={(e) => setFormOffer({ ...formOffer, discount_fixed: e.target.value })}
                   step="0.01"
@@ -525,15 +525,15 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Precio Original</p>
-                        <p className="font-bold">${offer.price}</p>
+                        <p className="font-bold">€{offer.price}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Descuento %</p>
                         <p className="font-bold">{offer.discount_percentage}%</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Descuento $</p>
-                        <p className="font-bold">${offer.discount_fixed}</p>
+                        <p className="text-sm text-gray-600">Descuento €</p>
+                        <p className="font-bold">€{offer.discount_fixed}</p>
                       </div>
                     </div>
 

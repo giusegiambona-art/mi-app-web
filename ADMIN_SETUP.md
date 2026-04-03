@@ -50,7 +50,7 @@ ADMIN_KEY=PizzaMaster2024!#@$
 #### Crear Oferta
 - **Pizza**: Selecciona a cuál pizza aplicar
 - **Descuento %**: Descuento porcentual (ej: 20 = 20%)
-- **Descuento $**: Descuento fijo en dinero
+- **Descuento €**: Descuento fijo en dinero
 - **Fecha inicio**: Cuándo empieza la oferta
 - **Fecha fin**: Cuándo termina la oferta
 - **Activa**: Marca si está disponible
